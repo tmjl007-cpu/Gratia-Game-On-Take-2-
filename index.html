@@ -1491,65 +1491,52 @@ function explodeAt(x, y, variantClass){
     flash.remove();
   }, 900);
 }
-    function handleBubblePop(b){
-      if (b.popped) return;
-      if (picked.includes(b.id)) return;
+function handleBubblePop(b){
+  if (b.popped) return;
+  if (picked.includes(b.id)) return;
 
-      if (picked.length >= MAX){
-  // remove oldest selection
-  const removed = picked.shift();
+  if (picked.length >= MAX){
+    const removed = picked.shift();
+    picked.push(b.id);
+    renderPicked();
 
-  // add the new one
-  picked.push(b.id);
+    spawnBubbleById(removed);
 
-  renderPicked();
+    msg("Replaced your oldest priority.");
+    setTimeout(()=>msg("Unlocked. Hit Continue!"), 800);
 
-   // ✅ bring the removed one back as a new falling bubble
-  spawnBubbleById(removed);
+  } else {
+    addPick(b.id);
+  }
 
-  msg("Replaced your oldest priority.");
-  setTimeout(()=>msg("Unlocked. Hit Continue!"), 800);
+  // unlock + pop sound
+  unlockAudio();
+  playPop();
 
-} else {
-  addPick(b.id);
+  // explode at bubble center
+  const r = b.el.getBoundingClientRect();
+  const sr = bubbleStage.getBoundingClientRect();
+  const cx = (r.left - sr.left) + r.width/2;
+  const cy = (r.top  - sr.top)  + r.height/2;
+
+  let variant = "";
+  if (b.el.classList.contains("c-px")) variant = "c-px";
+  if (b.el.classList.contains("c-quality")) variant = "c-quality";
+  if (b.el.classList.contains("c-retention")) variant = "c-retention";
+  if (b.el.classList.contains("c-onboarding")) variant = "c-onboarding";
+  if (b.el.classList.contains("c-culture")) variant = "c-culture";
+  if (b.el.classList.contains("c-staffing")) variant = "c-staffing";
+
+  explodeAt(cx, cy, variant);
+
+  b.popped = true;
+  b.el.classList.add("popping");
+
+  setTimeout(()=>{
+    if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
+  }, 240);
 }
-
-  msg("Replaced your oldest priority.");
-  setTimeout(()=>msg("Unlocked. Hit Continue!"), 800);
-
-} else {
-  addPick(b.id);
-}
-
-// ✅ unlock + pop sound (iPhone requires user gesture once)
-unlockAudio();
-playPop();
-
-// ✅ explode at bubble center
-const r = b.el.getBoundingClientRect();
-const sr = bubbleStage.getBoundingClientRect();
-const cx = (r.left - sr.left) + r.width/2;
-const cy = (r.top  - sr.top)  + r.height/2;
-
-let variant = "";
-
-if (b.el.classList.contains("c-px")) variant = "c-px";
-if (b.el.classList.contains("c-quality")) variant = "c-quality";
-if (b.el.classList.contains("c-retention")) variant = "c-retention";
-if (b.el.classList.contains("c-onboarding")) variant = "c-onboarding";
-if (b.el.classList.contains("c-culture")) variant = "c-culture";
-if (b.el.classList.contains("c-staffing")) variant = "c-staffing";
-
-explodeAt(cx, cy, variant);
-
-b.popped = true;
-b.el.classList.add("popping");
-
-setTimeout(()=>{
-  if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
-}, 240);
-
-} // ✅ CLOSE handleBubblePop(b) RIGHT HERE
+    // ✅ CLOSE handleBubblePop(b) RIGHT HERE
 
 function resetGame(){
   picked = [];
