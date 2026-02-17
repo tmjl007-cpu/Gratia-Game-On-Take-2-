@@ -1198,15 +1198,13 @@ That’s visibility.` },
   else if (n < MAX) {
     msg(`Tap ${MAX - n} more to continue.`);
   } 
-  else if (n === MAX){
-    msg("Analyzing your priorities...");
+ else if (n === MAX){
+  msg("🎯 Challenge completed — click Continue to see your results.");
 
-    stopBubbleLoop();
-
-    setTimeout(()=>{
-      showStory();
-    }, 1400);
-  }
+  // freeze bubbles so it feels final
+  stopBubbleLoop();
+   continueBtn.classList.add("primaryCta");
+}
 }
 
     function addPick(id){
