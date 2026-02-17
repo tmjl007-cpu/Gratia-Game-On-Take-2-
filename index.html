@@ -213,6 +213,56 @@ body{
       100%{ transform: translate3d(0,0,0) scale(1); }
     }
 
+    /* ---------- Bubble "explode" particles (dots + stars) ---------- */
+.burst{
+  position:absolute;
+  left:0; top:0;
+  width:10px; height:10px;
+  pointer-events:none;
+  z-index:5;
+}
+
+/* default particle */
+.burst i{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  transform: translate(-50%,-50%);
+  opacity: 0;
+  animation: burst 480ms ease-out forwards;
+}
+
+.burst i:nth-child(odd){ width:6px; height:6px; }
+.burst i:nth-child(3n){ width:4px; height:4px; }
+
+/* star particle */
+.burst i.star{
+  width:10px;
+  height:10px;
+  border-radius:0;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.12));
+}
+
+@keyframes burst{
+  0%   { opacity:1; transform: translate(-50%,-50%) scale(1); }
+  100% { opacity:0; transform: translate(var(--tx), var(--ty)) scale(.2); }
+}
+
     /* Gratia color variants */
     .bubble.v-magenta{
       background:
@@ -1134,9 +1184,13 @@ That’s visibility.` },
 
         const b = { id: item.id, el, x, y, size, speed, popped:false };
 
-        const pop = () => handleBubblePop(b);
-        el.addEventListener("click", pop);
-        el.addEventListener("touchend", (e)=>{ e.preventDefault(); pop(); }, { passive:false });
+        cconst pop = () => {
+  unlockAudio();     // ✅ first user gesture unlocks audio on iPhone
+  handleBubblePop(b);
+};
+
+el.addEventListener("click", pop);
+el.addEventListener("touchend", (e)=>{ e.preventDefault(); pop(); }, { passive:false });
 
         bubbleStage.appendChild(el);
         bubbles.push(b);
@@ -1197,7 +1251,83 @@ That’s visibility.` },
       if (bubbleRAF) cancelAnimationFrame(bubbleRAF);
       bubbleRAF = null;
     }
+/* ---------- iPhone-safe POP SOUND ---------- */
+let audioUnlocked = false;
+let popCtx = null;
 
+function unlockAudio(){
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+
+  try{
+    popCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // iOS needs resume in a user gesture
+    if (popCtx.state === "suspended") popCtx.resume();
+  }catch(e){
+    popCtx = null;
+  }
+}
+
+function playPop(){
+  if (!popCtx) return;
+
+  // short "blip" pop (no external file)
+  const o = popCtx.createOscillator();
+  const g = popCtx.createGain();
+
+  o.type = "triangle";
+  o.frequency.setValueAtTime(220, popCtx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(80, popCtx.currentTime + 0.06);
+
+  g.gain.setValueAtTime(0.0001, popCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.25, popCtx.currentTime + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, popCtx.currentTime + 0.09);
+
+  o.connect(g);
+  g.connect(popCtx.destination);
+
+  o.start();
+  o.stop(popCtx.currentTime + 0.1);
+}
+
+/* ---------- Burst (dots + stars) ---------- */
+function explodeAt(x, y, variantClass){
+  if (!bubbleStage) return;
+
+  const burst = document.createElement("div");
+  burst.className = "burst";
+  burst.style.left = x + "px";
+  burst.style.top  = y + "px";
+
+  // colors based on bubble variant
+  let colors = ["#E6007E","#3C8DCC","#F5A623","#FFFFFF"];
+  if (variantClass === "v-magenta") colors = ["#E6007E","#FF66B5","#FFFFFF"];
+  if (variantClass === "v-blue")    colors = ["#3C8DCC","#7CC6FF","#FFFFFF"];
+  if (variantClass === "v-orange")  colors = ["#F5A623","#FFD08A","#FFFFFF"];
+
+  const count = 18;
+
+  for (let i=0;i<count;i++){
+    const p = document.createElement("i");
+
+    // every 4th particle is a star ⭐️
+    if (i % 4 === 0) p.classList.add("star");
+
+    const angle = (Math.PI * 2) * (i / count) + (Math.random()*0.35);
+    const dist  = 45 + Math.random()*45;
+    const tx = Math.cos(angle) * dist;
+    const ty = Math.sin(angle) * dist;
+
+    p.style.setProperty("--tx", tx + "px");
+    p.style.setProperty("--ty", ty + "px");
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+
+    burst.appendChild(p);
+  }
+
+  bubbleStage.appendChild(burst);
+  setTimeout(()=>burst.remove(), 600);
+}
     function handleBubblePop(b){
       if (b.popped) return;
       if (picked.includes(b.id)) return;
@@ -1213,12 +1343,29 @@ That’s visibility.` },
 
       addPick(b.id);
 
-      b.popped = true;
-      b.el.classList.add("popping");
-      setTimeout(()=>{
-        if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
-      }, 240);
-    }
+// ✅ unlock + pop sound (iPhone requires user gesture once)
+unlockAudio();
+playPop();
+
+// ✅ explode at bubble center
+const r = b.el.getBoundingClientRect();
+const sr = bubbleStage.getBoundingClientRect();
+const cx = (r.left - sr.left) + r.width/2;
+const cy = (r.top  - sr.top)  + r.height/2;
+
+const variant =
+  b.el.classList.contains("v-magenta") ? "v-magenta" :
+  b.el.classList.contains("v-blue")    ? "v-blue" :
+  b.el.classList.contains("v-orange")  ? "v-orange" : "";
+
+explodeAt(cx, cy, variant);
+
+b.popped = true;
+b.el.classList.add("popping");
+
+setTimeout(()=>{
+  if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
+}, 240);
 
     function resetGame(){
       picked = [];
