@@ -213,6 +213,17 @@ body{
       100%{ transform: translate3d(0,0,0) scale(1); }
     }
 
+    /* ✅ Brighter, fixed colors per priority (Gratia-inspired) */
+.bubble.c-px{
+  background: radial-gradient(circle at 30% 25%,
+    rgba(255,255,255,.98) 0%,
+    rgba(255,255,255,.65) 22%,
+    rgba(230,0,126,.35) 55%,
+    rgba(230,0,126,.18) 78%,
+    rgba(11,31,77,.08) 100%);
+  border-color: rgba(230,0,126,.55);
+}
+
     /* ---------- Bubble "explode" particles (dots + stars) ---------- */
 .burst{
   position:absolute;
@@ -263,34 +274,6 @@ body{
   100% { opacity:0; transform: translate(var(--tx), var(--ty)) scale(.2); }
 }
 
-    /* Gratia color variants */
-    .bubble.v-magenta{
-      background:
-        radial-gradient(circle at 30% 25%,
-          rgba(255,255,255,.95) 0%,
-          rgba(255,255,255,.55) 28%,
-          rgba(230,0,126,.22) 55%,
-          rgba(11,31,77,.10) 100%);
-      border-color: rgba(230,0,126,.38);
-    }
-    .bubble.v-blue{
-      background:
-        radial-gradient(circle at 30% 25%,
-          rgba(255,255,255,.95) 0%,
-          rgba(255,255,255,.55) 28%,
-          rgba(60,141,204,.24) 55%,
-          rgba(11,31,77,.10) 100%);
-      border-color: rgba(60,141,204,.42);
-    }
-    .bubble.v-orange{
-      background:
-        radial-gradient(circle at 30% 25%,
-          rgba(255,255,255,.95) 0%,
-          rgba(255,255,255,.55) 28%,
-          rgba(245,166,35,.28) 55%,
-          rgba(11,31,77,.10) 100%);
-      border-color: rgba(245,166,35,.48);
-    }
 
     .gameFooter{
       margin-top:14px;
@@ -1122,14 +1105,21 @@ That’s visibility.` },
     }
 
     // ---------- Bubble visuals ----------
-    const bubbleVariants = ["v-magenta","v-blue","v-orange"];
-    function randVariant(){
-      return bubbleVariants[Math.floor(Math.random() * bubbleVariants.length)];
-    }
-    function applyVariant(el){
-      bubbleVariants.forEach(v => el.classList.remove(v));
-      el.classList.add(randVariant());
-    }
+   // ✅ One bright color per priority
+const priorityClass = {
+  px:        "c-px",
+  quality:   "c-quality",
+  retention: "c-retention",
+  onboarding:"c-onboarding",
+  culture:   "c-culture",
+  staffing:  "c-staffing",
+};
+
+function applyPriorityColor(el, id){
+  // remove any previous c-* class
+  el.className = el.className.replace(/\bc-\S+\b/g, "").trim();
+  el.classList.add(priorityClass[id] || "c-default");
+}
 
     function resetBubbles(){
       bubbles = [];
@@ -1147,7 +1137,7 @@ That’s visibility.` },
       data.forEach((item) => {
         const el = document.createElement("div");
         el.className = "bubble";
-        applyVariant(el);
+        applyPriorityColor(el, item.id);
         el.dataset.id = item.id;
         el.innerHTML = `
           <div>
@@ -1299,12 +1289,26 @@ function explodeAt(x, y, variantClass){
   burst.style.left = x + "px";
   burst.style.top  = y + "px";
 
-  // colors based on bubble variant
-  let colors = ["#E6007E","#3C8DCC","#F5A623","#FFFFFF"];
-  if (variantClass === "v-magenta") colors = ["#E6007E","#FF66B5","#FFFFFF"];
-  if (variantClass === "v-blue")    colors = ["#3C8DCC","#7CC6FF","#FFFFFF"];
-  if (variantClass === "v-orange")  colors = ["#F5A623","#FFD08A","#FFFFFF"];
+  // colors based on bubble class (priority color)
+let colors = ["#E6007E","#3C8DCC","#F5A623","#FFFFFF"]; // fallback
 
+if (variantClass === "c-px")
+  colors = ["#E6007E","#FF66B5","#FFFFFF"];
+
+if (variantClass === "c-quality")
+  colors = ["#3C8DCC","#7CC6FF","#FFFFFF"];
+
+if (variantClass === "c-retention")
+  colors = ["#F5A623","#FFD08A","#FFFFFF"];
+
+if (variantClass === "c-onboarding")
+  colors = ["#7CC6FF","#CDE9FF","#FFFFFF"];
+
+if (variantClass === "c-culture")
+  colors = ["#FF66B5","#FFC2E0","#FFFFFF"];
+
+if (variantClass === "c-staffing")
+  colors = ["#FFD08A","#FFF2CC","#FFFFFF"];
   const count = 18;
 
   for (let i=0;i<count;i++){
@@ -1353,10 +1357,14 @@ const sr = bubbleStage.getBoundingClientRect();
 const cx = (r.left - sr.left) + r.width/2;
 const cy = (r.top  - sr.top)  + r.height/2;
 
-const variant =
-  b.el.classList.contains("v-magenta") ? "v-magenta" :
-  b.el.classList.contains("v-blue")    ? "v-blue" :
-  b.el.classList.contains("v-orange")  ? "v-orange" : "";
+let variant = "";
+
+if (b.el.classList.contains("c-px")) variant = "c-px";
+if (b.el.classList.contains("c-quality")) variant = "c-quality";
+if (b.el.classList.contains("c-retention")) variant = "c-retention";
+if (b.el.classList.contains("c-onboarding")) variant = "c-onboarding";
+if (b.el.classList.contains("c-culture")) variant = "c-culture";
+if (b.el.classList.contains("c-staffing")) variant = "c-staffing";
 
 explodeAt(cx, cy, variant);
 
