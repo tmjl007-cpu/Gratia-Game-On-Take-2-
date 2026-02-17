@@ -1184,7 +1184,7 @@ That’s visibility.` },
 
         const b = { id: item.id, el, x, y, size, speed, popped:false };
 
-        cconst pop = () => {
+       const pop = () => {
   unlockAudio();     // ✅ first user gesture unlocks audio on iPhone
   handleBubblePop(b);
 };
@@ -1367,13 +1367,15 @@ setTimeout(()=>{
   if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
 }, 240);
 
-    function resetGame(){
-      picked = [];
-      renderPicked();
-      msg("");
-      stopBubbleLoop();
-      createBubbles();
-    }
+} // ✅ CLOSE handleBubblePop(b) RIGHT HERE
+
+function resetGame(){
+  picked = [];
+  renderPicked();
+  msg("");
+  stopBubbleLoop();
+  createBubbles();
+}
 
     // ---------- Story / Results / Lead ----------
     function showStory(){
