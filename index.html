@@ -421,11 +421,34 @@ touch-action: manipulation;
     }
 
     .msg{
-      min-height:18px;
-      color: #ffe1ec;
-      font-size:12px;
-      font-weight:800;
-    }
+  min-height:28px;
+  text-align:center;
+  font-weight:950;
+  letter-spacing:.4px;
+  transition: all .25s ease;
+}
+
+/* Normal helper text */
+.msg.normal{
+  font-size:13px;
+  color: rgba(255,255,255,.85);
+}
+
+/* BIG completion state */
+.msg.complete{
+  font-size:18px;
+  color: #FFD700; /* high visibility gold */
+  text-shadow:
+    0 0 8px rgba(255,215,0,.6),
+    0 0 18px rgba(255,165,0,.4);
+  animation: pulseComplete 1.6s ease-in-out infinite;
+}
+
+@keyframes pulseComplete{
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
 
     .btnrow{ display:flex; gap:10px; width:100%; }
 
@@ -1192,20 +1215,25 @@ That’s visibility.` },
 
   if (continueBtn) continueBtn.disabled = (n !== MAX);
 
-  if (n === 0) {
+   if (n === 0) {
+    msgEl.className = "msg normal";
     msg("Tap 3 priorities to unlock your Spotlight.");
   } 
   else if (n < MAX) {
+    msgEl.className = "msg normal";
     msg(`Tap ${MAX - n} more to continue.`);
   } 
- else if (n === MAX){
-  msg("🎯 Challenge completed — click Continue to see your results.");
-
-  // freeze bubbles so it feels final
-  stopBubbleLoop();
-   continueBtn.classList.add("primaryCta");
-}
-}
+  else if (n === MAX){
+    msgEl.className = "msg complete";
+    msg("🎯 CHALLENGE COMPLETED — Tap Continue to see your results.");
+  
+    // freeze bubbles so it feels final
+    stopBubbleLoop();
+  
+    // optional: make Continue feel like the main CTA
+    continueBtn.classList.add("ctaPulse");
+  }
+  }
 
     function addPick(id){
       if (picked.includes(id)) return;
