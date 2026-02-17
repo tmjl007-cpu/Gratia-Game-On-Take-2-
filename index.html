@@ -1251,6 +1251,39 @@ function applyPriorityColor(el, id){
       if (bubbleStage) bubbleStage.innerHTML = "";
     }
 
+    /* ✅ PASTE spawnBubbleById RIGHT HERE (above createBubbles) */
+function spawnBubbleById(id){
+  const item = data.find(d => d.id === id);
+  if (!item || !bubbleStage) return;
+
+  const rect = bubbleStage.getBoundingClientRect();
+  const stageW = rect.width;
+
+  const el = document.createElement("div");
+  el.className = "bubble";
+  applyPriorityColor(el, id);
+  el.dataset.id = id;
+  el.innerHTML = `
+    <div>
+      <div class="bTitle">${item.label}</div>
+      <div class="bSub">Tap to pop</div>
+    </div>
+  `;
+
+  const size = Math.min(160, Math.max(115, stageW * 0.28));
+  const x = Math.random() * Math.max(1, (stageW - size));
+  const y = - (80 + Math.random()*220);
+  const speed = 0.35 + Math.random() * 0.35;
+
+  const bObj = { id, el, x, y, size, speed, popped:false };
+
+  const pop = () => { unlockAudio(); handleBubblePop(bObj); };
+  el.addEventListener("click", pop);
+  el.addEventListener("touchend", (e)=>{ e.preventDefault(); pop(); }, { passive:false });
+
+  bubbleStage.appendChild(el);
+  bubbles.push(bObj);
+}
     function createBubbles(){
       if (!bubbleStage) return;
 
@@ -1464,12 +1497,22 @@ function explodeAt(x, y, variantClass){
 
       if (picked.length >= MAX){
   // remove oldest selection
-  picked.shift();
+  const removed = picked.shift();
 
   // add the new one
   picked.push(b.id);
 
   renderPicked();
+
+   // ✅ bring the removed one back as a new falling bubble
+  spawnBubbleById(removed);
+
+  msg("Replaced your oldest priority.");
+  setTimeout(()=>msg("Unlocked. Hit Continue!"), 800);
+
+} else {
+  addPick(b.id);
+}
 
   msg("Replaced your oldest priority.");
   setTimeout(()=>msg("Unlocked. Hit Continue!"), 800);
