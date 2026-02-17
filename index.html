@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>The Visibility Challenge</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Game On: Workforce Impact Challenge</title>
+
   <style>
     :root{
       /* Gratia-inspired palette */
@@ -21,6 +22,7 @@
     }
 
     *{ box-sizing:border-box; }
+    html,body{ height:100%; }
 
     body{
       margin:0;
@@ -48,11 +50,11 @@
       z-index: 1200;
     }
     .introLogo{
-  display:block;
-  margin:0 auto 22px auto;
-  max-width:280px;
-  width:70%;
-}
+      display:block;
+      margin:0 auto 22px auto;
+      max-width:280px;
+      width:70%;
+    }
     .introCard{
       width:min(760px, 100%);
       background: rgba(255,255,255,.12);
@@ -92,27 +94,12 @@
       flex-wrap:wrap;
     }
 
-    /* ---------- Main Layout ---------- */
-    .app{
-      width:min(1100px, 100%);
-      display:grid;
-      grid-template-columns: 1fr 420px;
-      justify-content: center;
-      gap:24px;
-      align-items:start;
-    }
-    @media (max-width: 980px){
-      .app{ grid-template-columns: 1fr;
-      }
-      .spotwrap{ order: 1; }
-      .panel:first-child{ order: 2; }
-    }
-
+    /* ---------- Card ---------- */
     .panel{
       background: var(--light-blue);
       border:1px solid rgba(11,31,77,.12);
       border-radius:18px;
-      padding:18px;
+      padding:20px;
       color: var(--text);
       box-shadow: 0 10px 26px rgba(0,0,0,.10);
     }
@@ -120,7 +107,7 @@
       font-weight:950;
       letter-spacing:.2px;
       margin:0 0 8px 0;
-      font-size:18px;
+      font-size:20px;
       color: var(--navy);
     }
     .sub{
@@ -130,147 +117,153 @@
       line-height:1.4;
     }
 
-    /* Choices */
-    .choices{ display:grid; gap:10px; }
-    .card{
-      background: var(--white);
-      border:1px solid rgba(11,31,77,.12);
-      border-radius:14px;
-      padding:12px;
-      cursor: grab;
-      user-select:none;
+    /* ---------- Page 1: Game-only layout ---------- */
+    .gameOnly{
+      width:min(980px, 100%);
+    }
+
+    .gameHeader{
+      text-align:left;
+      margin-bottom:12px;
+    }
+
+    /* Bubble stage is the hero */
+    .bubbleStage{
+      width: 100%;
+      max-width: 100%;
+      height: 560px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(11,31,77,.14);
+      position: relative;
+      overflow: hidden;
       touch-action: manipulation;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      transition: transform .08s ease, border-color .15s ease, box-shadow .15s ease;
-      color: var(--navy);
     }
-    .card:active{ cursor: grabbing; }
-   .card.selected{
-  border-color: rgba(245,166,35,.85);   /* Gratia orange */
-  box-shadow: 0 10px 22px rgba(245,166,35,.18);
-  background: rgba(245,166,35,.08);
-}
+    @media (max-width: 620px){
+      body{ padding:14px; }
+      .bubbleStage{
+        height: 56vh;
+        min-height: 420px;
+      }
+    }
 
-.card.selected .label{
-  color: var(--navy);
-}
-
-.card.selected::after{
-  content:"Selected";
-  margin-left:auto;
-  font-size:12px;
-  font-weight:950;
-  color: var(--navy);
-  padding:4px 10px;
-  border-radius:999px;
-  background: rgba(245,166,35,.18);
-  border:1px solid rgba(245,166,35,.45);
-}
-    .pill{
-      font-size:12px;
-      padding:4px 8px;
+    /* Bubbles */
+    .bubble{
+      position:absolute;
+      left:0; top:0;
+      width: clamp(110px, 30vw, 160px);
+      height: clamp(110px, 30vw, 160px);
       border-radius:999px;
-      background: rgba(60,141,204,.14);
-      border:1px solid rgba(60,141,204,.35);
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:14px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      background:
+        radial-gradient(circle at 30% 25%,
+          rgba(255,255,255,.95) 0%,
+          rgba(255,255,255,.55) 28%,
+          rgba(60,141,204,.20) 55%,
+          rgba(11,31,77,.10) 100%);
+      border: 2px solid rgba(11,31,77,.18);
+      box-shadow: 0 10px 24px rgba(0,0,0,.10);
+      transform: translate3d(0,0,0);
+      will-change: transform;
+    }
+    .bubble .bTitle{
+      font-weight:950;
       color: var(--navy);
-      font-weight:900;
-      white-space:nowrap;
+      font-size:14px;
+      line-height:1.15;
     }
-    .label{ font-weight:900; }
-    .desc{ color:var(--muted); font-size:12px; margin-top:2px; }
-
-     /* Spotlight */
-    .spotwrap{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:14px;
+    .bubble .bSub{
+      margin-top:6px;
+      font-weight:850;
+      font-size:11px;
+      color: rgba(11,31,77,.70);
+      line-height:1.25;
     }
-
-    .spot{
-    width:340px;
-    aspect-ratio:1/1;
-    border-radius:999px;
-    position:relative;
-    display:grid;
-    place-items:center;
-    border:1px solid rgba(255,255,255,.22);
-    background:
-    radial-gradient(circle at 50% 50%,
-      rgba(255,255,255,var(--b, .12)) 0%,
-      rgba(60,141,204,var(--g, .12)) 35%,
-      var(--navy-dark) 72%);
-    box-shadow:
-      0 0 calc(18px + var(--glow, 0px)) rgba(230,0,126,.45),
-      0 0 calc(24px + var(--glow, 0px)) rgba(255,255,255,.10);
-    transition: box-shadow .25s ease,
-              background .25s ease,
-              border-color .25s ease,
-              transform .25s ease;
+    .bubble.popping{ animation: pop .22s ease forwards; }
+    @keyframes pop{
+      0%   { transform: scale(1); opacity: 1; }
+      60%  { transform: scale(1.15); opacity: .95; }
+      100% { transform: scale(.2); opacity: 0; }
+    }
+    .bubble.blocked{ animation: nudge .18s ease; }
+    @keyframes nudge{
+      0% { transform: translate3d(0,0,0) scale(1); }
+      40%{ transform: translate3d(6px,0,0) scale(1.02); }
+      100%{ transform: translate3d(0,0,0) scale(1); }
     }
 
-    /* Pop effect when 3 selected */
-    .lockedIn{
-    transform: scale(1.06);
+    /* Gratia color variants */
+    .bubble.v-magenta{
+      background:
+        radial-gradient(circle at 30% 25%,
+          rgba(255,255,255,.95) 0%,
+          rgba(255,255,255,.55) 28%,
+          rgba(230,0,126,.22) 55%,
+          rgba(11,31,77,.10) 100%);
+      border-color: rgba(230,0,126,.38);
     }
-.spot.dragover{
-      border-color: rgba(245,166,35,.75);
-      box-shadow: 0 0 34px rgba(245,166,35,.55);
+    .bubble.v-blue{
+      background:
+        radial-gradient(circle at 30% 25%,
+          rgba(255,255,255,.95) 0%,
+          rgba(255,255,255,.55) 28%,
+          rgba(60,141,204,.24) 55%,
+          rgba(11,31,77,.10) 100%);
+      border-color: rgba(60,141,204,.42);
     }
-    .spotInner{
-      width: 78%;
-      height: 78%;
-      border-radius:999px;
-      border:1px dashed rgba(255,255,255,.32);
+    .bubble.v-orange{
+      background:
+        radial-gradient(circle at 30% 25%,
+          rgba(255,255,255,.95) 0%,
+          rgba(255,255,255,.55) 28%,
+          rgba(245,166,35,.28) 55%,
+          rgba(11,31,77,.10) 100%);
+      border-color: rgba(245,166,35,.48);
+    }
+
+    .gameFooter{
+      margin-top:14px;
       display:flex;
       flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding:14px;
-      text-align:center;
-      background: rgba(8,23,53,.16);
+      gap:12px;
     }
-    .count{
+
+    /* Progress bar */
+    .progressWrap{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .progressTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
       font-weight:950;
-      font-size:14px;
-      color: rgba(255,255,255,.95);
+      color: var(--navy);
+      font-size:13px;
     }
-    .hint{
-      font-size:12px;
-      color: rgba(255,255,255,.78);
-      line-height:1.4;
-    }
-    .picked{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      justify-content:center;
-      margin-top:6px;
-    }
-    .tag{
-      font-size:12px;
-      padding:6px 10px;
+    .progressBar{
+      width:100%;
+      height:12px;
       border-radius:999px;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.22);
-      display:flex;
-      gap:8px;
-      align-items:center;
-      color: rgba(255,255,255,.95);
-      font-weight:800;
+      background: rgba(11,31,77,.10);
+      border:1px solid rgba(11,31,77,.12);
+      overflow:hidden;
     }
-    .x{
-      border:none;
-      background: transparent;
-      color: rgba(255,255,255,.85);
-      cursor:pointer;
-      font-size:14px;
-      line-height:1;
+    .progressFill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, var(--blue), var(--magenta));
+      transition: width .35s ease;
     }
-    .x:hover{ color:white; }
 
     .msg{
       min-height:18px;
@@ -279,7 +272,7 @@
       font-weight:800;
     }
 
-    .btnrow{ display:flex; gap:10px; width:340px; }
+    .btnrow{ display:flex; gap:10px; width:100%; }
 
     button{
       flex:1;
@@ -300,88 +293,33 @@
     }
     button:disabled{ opacity:.45; cursor:not-allowed; box-shadow:none; }
 
-    /* Replace pulse */
-    .spot.pulse { animation: pulse .22s ease; }
-    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.02); } }
-
     /* ---------- Overlays ---------- */
-      .overlay{
-        position:fixed;
-        inset:0;
-        background: rgba(8,23,53,.80);
-        display:flex;
-        align-items:flex-start;              /* changed */
-        justify-content:center;
-        z-index:999;
-        padding:16px 14px;                  /* changed */
-        overflow-y:auto;                    /* added */
-        -webkit-overflow-scrolling:touch;   /* added */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(8,23,53,.80);
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      z-index:999;
+      padding:16px 14px;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
     }
-      .modal{
-        width:min(720px, 100%);
-        background: var(--light-blue);
-        border:1px solid rgba(11,31,77,.12);
-        border-radius:18px;
-        padding:22px;
-        text-align:left;
-        box-shadow: 0 18px 60px rgba(0,0,0,.45);
-        color: var(--navy);
-
-        margin:12px auto;                   /* added */
-        max-height: calc(100vh - 32px);     /* added */
-        overflow-y:auto;                    /* added */
-        -webkit-overflow-scrolling:touch;   /* added */
+    .modal{
+      width:min(720px, 100%);
+      background: var(--light-blue);
+      border:1px solid rgba(11,31,77,.12);
+      border-radius:18px;
+      padding:22px;
+      text-align:left;
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      color: var(--navy);
+      margin:12px auto;
+      max-height: calc(100vh - 32px);
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
     }
-    /* Story moment */
-.storyModal{
-  width:min(720px, 100%);
-}
-
-.storyCard{
-  margin-top:14px;
-  padding:16px;
-  border-radius:16px;
-  background: rgba(255,255,255,.92);
-  border:1px solid rgba(11,31,77,.10);
-  box-shadow: 0 10px 26px rgba(0,0,0,.10);
-}
-
-.storyKicker{
-  font-size:12px;
-  letter-spacing:.8px;
-  text-transform:uppercase;
-  font-weight:950;
-  color: rgba(11,31,77,.70);
-  margin-bottom:10px;
-}
-
-.storyText{
-  color: var(--navy);
-  font-weight:850;
-  font-size:15px;
-  line-height:1.55;
-  white-space:pre-line; /* keeps line breaks */
-}
-
-.storySkipRow{
-  margin-top:12px;
-  text-align:center;
-}
-
-.storySkipBtn{
-  background: transparent;
-  border: none;
-  color: rgba(11,31,77,.55);
-  font-weight:900;
-  cursor:pointer;
-  padding:8px 10px;
-  border-radius:10px;
-}
-
-.storySkipBtn:hover{
-  color: var(--navy);
-  background: rgba(11,31,77,.06);
-}
     .modalTop{
       display:flex;
       align-items:flex-start;
@@ -392,17 +330,7 @@
       margin:0;
       font-size:20px;
       font-weight:950;
-      margin-top:28px;   /* add this */
-      margin-bottom:14px;
       letter-spacing:.2px;
-      color: var(--navy);
-    }
-     
-    .sectionTitle{
-      font-size:28px;        /* match .title */
-      font-weight:950;
-      margin-top:24px;
-      margin-bottom:14px;
       color: var(--navy);
     }
     .subtext{
@@ -456,6 +384,7 @@
       color: var(--muted);
       font-size:13px;
       line-height:1.45;
+      font-weight:800;
     }
 
     .actions{
@@ -464,7 +393,6 @@
       gap:10px;
     }
     .actions button{ flex:1; }
-
     .actionsStacked{
       flex-direction: column;
       gap: 12px;
@@ -479,46 +407,16 @@
       color:white;
       box-shadow: 0 8px 22px rgba(245,166,35,.35);
     }
-
-.primaryCta:hover{
-  transform:translateY(-2px);
-  box-shadow:0 10px 26px rgba(245,166,35,.45);
-}
-
+    .primaryCta:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 26px rgba(245,166,35,.45);
+    }
     .subtleBack{
       width:100%;
       background: transparent;
       color: var(--navy);
       box-shadow: none;
       border:1px solid rgba(11,31,77,.15);
-    }
-
-    .btn.primary{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: linear-gradient(90deg,#E6007E,#C6006A);
-      color:white;
-      border:none;
-      border-radius:999px;
-      padding:14px 18px;
-      font-weight:900;
-      cursor:pointer;
-      text-decoration:none;
-      box-shadow:0 6px 16px rgba(230,0,126,.35);
-    }
-
-    .btn.primary:hover{
-      transform:translateY(-2px);
-      box-shadow:0 8px 22px rgba(230,0,126,.45);
-    }
-    
-    .note{
-      margin-top:10px;
-      color: rgba(11,31,77,.65);
-      font-size:12px;
-      line-height:1.4;
-      font-weight:800;
     }
 
     .impactTagline{
@@ -578,14 +476,32 @@
       font-weight:900;
     }
 
-    .btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  text-decoration:none;
-}
+    /* Story */
+    .storyCard{
+      margin-top:14px;
+      padding:16px;
+      border-radius:16px;
+      background: rgba(255,255,255,.92);
+      border:1px solid rgba(11,31,77,.10);
+      box-shadow: 0 10px 26px rgba(0,0,0,.10);
+    }
+    .storyKicker{
+      font-size:14px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      font-weight:950;
+      color: var(--magenta);
+      margin-bottom:12px;
+    }
+    .storyText{
+      color: var(--navy);
+      font-weight:850;
+      font-size:15px;
+      line-height:1.55;
+      white-space:pre-line;
+    }
 
-    /* Lead capture form */
+    /* Lead form */
     form{ margin-top:14px; }
     .formGrid{
       display:grid;
@@ -630,157 +546,236 @@
       min-height:16px;
       font-weight:900;
     }
+
+    /* Confetti canvas */
     #confettiCanvas{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    z-index:3000;
-  }
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:9999;
+    }
+
+    /* Share + Scoreboard bits */
+    .shareRow{
+      margin-top:16px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:14px;
+    }
+    .qrImage{
+      width:120px;
+      height:120px;
+      border-radius:14px;
+      border:2px solid rgba(11,31,77,.18);
+      background:#fff;
+      padding:10px;
+    }
+    .shareButtons{
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .shareBtn{
+      min-width:140px;
+      padding:12px 16px;
+      border-radius:12px;
+      font-weight:900;
+    }
+
+    .conferenceBtn{
+      width:100%;
+      background: var(--orange);
+      border:none;
+      color:white;
+      font-weight:950;
+      box-shadow: 0 10px 26px rgba(245,166,35,.35);
+      animation: subtlePulse 4s ease-in-out infinite;
+    }
+    @keyframes subtlePulse{
+      0%   { box-shadow: 0 10px 26px rgba(245,166,35,.35); }
+      50%  { box-shadow: 0 14px 34px rgba(245,166,35,.55); }
+      100% { box-shadow: 0 10px 26px rgba(245,166,35,.35); }
+    }
+
+    .scoreRow{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin:12px 0;
+    }
+    .scoreTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-weight:900;
+      color: var(--navy);
+      font-size:13px;
+    }
+    .scoreBarWrap{
+      width:100%;
+      height:12px;
+      border-radius:999px;
+      background: rgba(11,31,77,.10);
+      overflow:hidden;
+      border:1px solid rgba(11,31,77,.10);
+    }
+    .scoreBar{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, var(--orange), var(--magenta));
+      transition: width .6s ease;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      text-decoration:none;
+    }
+    .btn.primary{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(90deg,#E6007E,#C6006A);
+      color:white;
+      border:none;
+      border-radius:999px;
+      padding:14px 18px;
+      font-weight:900;
+      cursor:pointer;
+      text-decoration:none;
+      box-shadow:0 6px 16px rgba(230,0,126,.35);
+    }
+    .btn.primary:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 22px rgba(230,0,126,.45);
+    }
   </style>
 </head>
 
 <body>
+  <!-- Confetti canvas -->
+  <canvas id="confettiCanvas"></canvas>
 
   <!-- Intro Screen -->
   <div id="introScreen" class="screen" role="dialog" aria-modal="true" aria-label="Intro">
     <div class="introCard">
-
-  <img src="./logo.svg"
-     alt="Gratia Health"
-     class="introLogo" />
-
-  <div class="introSubtitle">Gratia Health presents</div>
-  <h1 class="introTitle">The Visibility Challenge</h1>
-      <div class="introTagline">Bring invisible stories into the spotlight.</div>
+      <img src="./logo.svg" alt="Gratia Health" class="introLogo" />
+      <div class="introSubtitle">Gratia Health presents</div>
+      <h1 class="introTitle">Game On: Workforce Impact Challenge</h1>
+      <div class="introTagline">Healthcare Leaders: What’s Driving Performance in Your System?</div>
 
       <div class="introActions">
-        <button id="startBtn" type="button">Start Game</button>
+        <button id="startBtn" type="button">Start the Game</button>
       </div>
     </div>
   </div>
 
   <!-- Game Container -->
   <div id="gameContainer" class="hidden">
-    <div class="app">
+    <div class="gameOnly">
       <div class="panel">
-        <h3 class="h">Pick your priorities</h3>
-        <p class="sub">Select up to <b>3</b> priorities into the Spotlight. The spotlight gets brighter as you lock in what matters most.</p>
-        <div class="choices" id="choices"></div>
-      </div>
+        <!-- Header -->
+        <div class="gameHeader">
+          <h3 class="h">Pop 3 Priorities That Matter Most</h3>
+          <p class="sub">Tap 3 to unlock your Spotlight.</p>
+        </div>
 
-      <div class="spotwrap">
-        <div class="spot" id="spot" aria-label="Spotlight Circle drop zone">
-          <div class="spotInner">
-            <div class="count" id="count">Choose the 3 priorities to spotlight.</div>
-            <div class="picked" id="picked"></div>
+        <!-- Bubble Stage -->
+        <div id="bubbleStage" class="bubbleStage" aria-label="Pop priorities bubbles"></div>
+
+        <!-- Footer -->
+        <div class="gameFooter">
+          <!-- Progress -->
+          <div class="progressWrap">
+            <div class="progressTop">
+              <div class="progressText" id="progressText">0 / 3 selected</div>
+            </div>
+            <div class="progressBar" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="0">
+              <div class="progressFill" id="progressFill" style="width:0%;"></div>
+            </div>
+          </div>
+
+          <!-- Message -->
+          <div class="msg" id="msg"></div>
+
+          <!-- Buttons -->
+          <div class="btnrow">
+            <button class="secondary" id="resetBtn" type="button">Reset</button>
+            <button id="continueBtn" type="button" disabled>Continue</button>
           </div>
         </div>
-        <div class="msg" id="msg"></div>
-        <div class="btnrow">
-          <button class="secondary" id="resetBtn">Reset</button>
-          <button id="continueBtn" disabled>Continue</button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Results Overlay -->
-    <div id="resultsOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Results">
-      <div class="modal">
-        <div class="modalTop">
-          <div>
-            <h2 class="title">Your Spotlight</h2>
-            <p class="subtext">Here’s what you chose — and what we recommend next.</p>
-          </div>
-          <button class="closeBtn" id="closeResultsBtn" aria-label="Close results">✕</button>
-        </div>
-
-        <div class="chips" id="resultsChips"></div>
-
-        <div class="box">
-          <div class="boxtitle" id="recTitle">Recommended focus</div>
-          <p class="boxtext" id="recText"></p>
-        </div>
-
-        <div class="title">
-          Gratia games aligned to your priorities
-        </div>
-
-        <div class="gameGrid" id="gameGrid"></div>
-
-        <div class="actions actionsStacked">
-
-        <button id="toLeadBtn" class="primaryCta">
-          Bring this to life in your hospital
-        </button>
-
-        <button class="secondary subtleBack" id="backBtn">
-          Adjust priorities
-        </button>
-
-    </div>
-        <div class="impactTagline">Make your staff’s impact visible — and strengthen patient care.</div>
-      </div>
-    </div>
-
-    <!-- Story Overlay -->
-      <div id="storyOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Story moment">
-        <div class="modal storyModal">
-        <div class="modalTop">
-          <div>
-            <h2 class="title" style="margin-top:0;">A moment on the floor</h2>
-            <p class="subtext">This is what “visibility” looks like in real life.</p>
-          </div>
-          <button class="closeBtn" id="closeStoryBtn" aria-label="Close story">✕</button>
-        </div>
-
-        <div class="storyCard">
-          <div class="storyKicker" id="storyKicker">Your shift, in the spotlight</div>
-          <div class="storyText" id="storyText"></div>
-        </div>
-
-        <div class="actions actionsStacked">
-          <button id="storyContinueBtn" class="primaryCta">Continue to your Spotlight</button>
-          <button class="secondary subtleBack" id="storyBackBtn">Adjust priorities</button>
-        </div>
-
       </div>
     </div>
   </div>
-    
-    <!-- Games Overlay -->
-    <div id="gamesOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Aligned games">
-      <div class="modal">
-        <div class="modalTop">
-          <div>
-            <h2 class="title">Games aligned to your picks</h2>
-            <p class="subtext">One game per area you chose (short why).</p>
-          </div>
-          <button class="closeBtn" id="closeGamesBtn" aria-label="Close games">✕</button>
+
+  <!-- Story Overlay -->
+  <div id="storyOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Story moment">
+    <div class="modal">
+      <div class="modalTop">
+        <div>
+          <h2 class="title">A moment on the floor</h2>
+          <p class="subtext">This is what “visibility” looks like in real life.</p>
         </div>
+        <button class="closeBtn" id="closeStoryBtn" aria-label="Close story">✕</button>
+      </div>
 
-        <div class="chips" id="gamesChips"></div>
-        <div class="gameGrid" id="gameGrid"></div>
+      <div class="storyCard">
+        <div class="storyKicker" id="storyKicker">Your shift, in the spotlight</div>
+        <div class="storyText" id="storyText"></div>
+      </div>
 
-        <div class="actions">
-          <button id="toLeadBtn">Get a quick demo</button>
-          <button class="secondary" id="gamesBackBtn">Back</button>
-        </div>
-
-        <div class="note">Explainers are capped at ~5–6 words.</div>
+      <div class="actions actionsStacked">
+        <button id="storyContinueBtn" class="primaryCta" type="button">Continue to your Spotlight</button>
+        <button class="secondary subtleBack" id="storyBackBtn" type="button">Back to game</button>
       </div>
     </div>
+  </div>
 
-    <!-- Lead Capture Overlay -->
-    <div id="leadOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Lead capture">
-      <div class="modal">
-        <div class="modalTop">
-          <div>
-            <h2 class="title">See this in your hospital</h2>
-            <p class="subtext">We’ll show you how to make your staff’s impact visible — fast.</p>
-          </div>
-          <button class="closeBtn" id="closeLeadBtn" aria-label="Close lead capture">✕</button>
+  <!-- Results Overlay -->
+  <div id="resultsOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Results">
+    <div class="modal">
+      <div class="modalTop">
+        <div>
+          <h2 class="title">Your Spotlight</h2>
+          <p class="subtext">Here’s what you chose — and what we recommend next.</p>
         </div>
+        <button class="closeBtn" id="closeResultsBtn" aria-label="Close results">✕</button>
+      </div>
+
+      <div class="chips" id="resultsChips"></div>
+
+      <div class="box">
+        <div class="boxtitle" id="recTitle">Recommended focus</div>
+        <p class="boxtext" id="recText"></p>
+      </div>
+
+      <div class="title" style="margin-top:22px;">Gratia games aligned to your priorities</div>
+      <div class="gameGrid" id="gameGrid"></div>
+
+      <div class="actions actionsStacked">
+        <button id="toLeadBtn" class="primaryCta" type="button">Bring this to life in your hospital</button>
+        <button class="secondary subtleBack" id="backBtn" type="button">Adjust priorities</button>
+      </div>
+
+      <div class="impactTagline">Make your staff’s impact visible — and strengthen patient care.</div>
+    </div>
+  </div>
+
+  <!-- Lead Capture Overlay -->
+  <div id="leadOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Lead capture">
+    <div class="modal">
+      <div class="modalTop">
+        <div>
+          <h2 class="title">See this in your hospital</h2>
+          <p class="subtext">We’ll show you how to make your staff’s impact visible — fast.</p>
+        </div>
+        <button class="closeBtn" id="closeLeadBtn" aria-label="Close lead capture">✕</button>
+      </div>
 
       <div id="leadFormState">
         <form id="leadForm">
@@ -817,722 +812,819 @@
           <div class="actions">
             <button type="submit">Let's explore further</button>
           </div>
-
         </form>
       </div>
-        <div id="thankYouState" class="hidden">
 
-  <div class="title" style="margin-top:18px; margin-bottom:6px;">You’re all set.</div>
-  <p class="subtext" style="margin-top:0; margin-bottom:14px;">
-    Next step: book time and invite a colleague to explore visibility in action.
-  </p>
+      <div id="thankYouState" class="hidden">
+        <div class="title" style="margin-top:18px; margin-bottom:6px;">You’re all set.</div>
+        <p class="subtext" style="margin-top:0; margin-bottom:14px;">
+          Next step: book time and invite a colleague to explore visibility in action.
+        </p>
 
-  <div class="actions">
-    <a id="bookCallLink"
-       href="https://calendly.com/tim-lafrankie-gratiahealth/gratia-alignment-session"
-       target="_blank"
-       rel="noopener"
-       class="btn primary"
-       style="width:100%;">
-      Book a strategy call
-    </a>
-  </div>
+        <div class="actions">
+          <a
+            id="bookCallLink"
+            href="https://calendly.com/tim-lafrankie-gratiahealth/gratia-alignment-session"
+            target="_blank"
+            rel="noopener"
+            class="btn primary"
+            style="width:100%;">
+            Book a strategy call
+          </a>
+        </div>
 
-  <div style="margin-top:18px; font-weight:950; color: var(--navy);">
-    Invite a colleague to explore visibility in action
-  </div>
+        <div class="actions" style="margin-top:12px;">
+          <button type="button" class="conferenceBtn" id="openScoreBtn">
+            See live conference results
+          </button>
+        </div>
 
-  <div style="margin-top:12px; display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
-    <img id="shareQr"
-         alt="QR code"
-         style="width:120px; height:120px; border-radius:14px; border:2px solid rgba(11,31,77,.18); background:#fff; padding:10px;" />
-    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-      <button type="button" class="secondary" id="copyLinkBtn">Copy link</button>
+        <div style="margin-top:22px; font-weight:950; color: var(--navy); text-align:center;">
+          Invite a colleague to explore visibility in action
+        </div>
+
+        <div class="shareRow">
+          <img id="shareQr" alt="QR code" class="qrImage" />
+          <div class="shareButtons">
+            <button type="button" class="secondary shareBtn" id="copyLinkBtn">Copy link</button>
+            <button type="button" class="secondary shareBtn" id="startOverBtn">Start over</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="actions" style="margin-top:18px;">
-    <button type="button" class="secondary" id="startOverBtn">Start over</button>
-  </div>
+  <!-- Live Scoreboard Overlay -->
+  <div id="scoreOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Live conference results">
+    <div class="modal">
+      <div class="modalTop">
+        <div>
+          <h2 class="title">Live conference results</h2>
+          <p class="subtext" id="scoreMeta">Loading…</p>
+        </div>
+        <button class="closeBtn" id="closeScoreBtn" aria-label="Close">✕</button>
+      </div>
 
-</div>
+      <div id="scoreList" style="margin-top:14px;"></div>
+
+      <div class="actions actionsStacked" style="margin-top:18px;">
+        <a
+          id="scoreBookCall"
+          href="https://calendly.com/tim-lafrankie-gratiahealth/gratia-alignment-session"
+          target="_blank"
+          rel="noopener"
+          class="btn primary"
+          style="width:100%;">
+          Book a strategy call
+        </a>
+        <button class="secondary subtleBack" id="refreshScoreBtn" type="button">Refresh</button>
+      </div>
     </div>
   </div>
 
-<script>
-  // Intro screen controls
-  const introScreen = document.getElementById("introScreen");
-  const startBtn = document.getElementById("startBtn");
-  const gameContainer = document.getElementById("gameContainer");
-  const leadFormState = document.getElementById("leadFormState");
-  const thankYouState = document.getElementById("thankYouState");
-  const shareQr = document.getElementById("shareQr");
-  const copyLinkBtn = document.getElementById("copyLinkBtn");
-  const startOverBtn = document.getElementById("startOverBtn");
+  <script>
+    // ---------- Config ----------
+    const MAX = 3;
 
-  // ---- START BUTTON (single source of truth) ----
-function startGame(){
-  introScreen.classList.add("hidden");
-  gameContainer.classList.remove("hidden");
-  window.scrollTo(0,0);
-}
+    // Conference Mode Endpoint (only once)
+    const CONFERENCE_ENDPOINT =
+      "https://script.google.com/macros/s/AKfycbxQfYi_Xp3PXd8Jw34YrHAhPVTunJf091kvs-F916MwRUhaLOrYLrKCvVcd5uuncUAP/exec";
 
-if (startBtn){
-  startBtn.onclick = null; // clears any inline onclick
-  startBtn.addEventListener("click", (e)=>{
-    e.preventDefault();
-    startGame();
-  });
-}
+    // Your selectable areas
+    const data = [
+      { id:"px",       label:"Patient Experience", desc:"Make everyday moments visible that impact HCAHPS." },
+      { id:"quality",  label:"Quality & Safety",   desc:"Drive consistent behaviors that improve outcomes." },
+      { id:"retention",label:"Retention",         desc:"Keep great nurses and reduce churn." },
+      { id:"onboarding",label:"Onboarding",       desc:"Get new hires productive faster." },
+      { id:"culture",  label:"Team Culture",      desc:"Boost teamwork, recognition, and belonging." },
+      { id:"staffing", label:"Staffing Stability",desc:"Cut contract labor reliance and keep units staffed." },
+    ];
 
+    // One aligned game per area
+    const gameMap = {
+      staffing:   { name: "Shift Pick-Up",        why: "Fill gaps fast, reduce agency.", tags:["Coverage","Speed"] },
+      retention:  { name: "Living Legends",       why: "Recognize top performers, keep them.", tags:["Recognition","Retention"] },
+      quality:    { name: "Care IQ",              why: "Reinforce daily quality behaviors.", tags:["Quality","Behaviors"] },
+      px:         { name: "Compliment Circle",    why: "Boost kindness patients notice.", tags:["PX","Culture"] },
+      culture:    { name: "Compliment Circle",    why: "Create everyday positive visibility.", tags:["Teamwork","Belonging"] },
+      onboarding: { name: "New Hire Navigator",   why: "Accelerate ramp, reduce early churn.", tags:["Onboarding","Ramp"] },
+    };
 
-  // Failsafe: allow inline onclick to work even if listeners don't bind
-  function startGame(){
-    try{
-      introScreen.classList.add("hidden");
-      gameContainer.classList.remove("hidden");
-      console.log("[Visibility Challenge] Game started");
-    }catch(e){
-      console.error("[Visibility Challenge] startGame failed:", e);
-      alert("Start failed. Open console for details.");
-    }
-  }
-
-  const MAX = 3;
-  const behavior = "replaceOldest"; // "block" or "replaceOldest"
-
-  // Your selectable areas
-  const data = [
-    { id:"px", label:"Patient Experience", desc:"Make everyday moments visible that impact HCAHPS." },
-    { id:"quality", label:"Quality & Safety", desc:"Drive consistent behaviors that improve outcomes." },
-    { id:"retention", label:"Retention", desc:"Keep great nurses and reduce churn." },
-    { id:"onboarding", label:"Onboarding", desc:"Get new hires productive faster." },
-    { id:"culture", label:"Team Culture", desc:"Boost teamwork, recognition, and belonging." },
-    { id:"staffing", label:"Staffing Stability", desc:"Cut contract labor reliance and keep units staffed." },
-  ];
-
-  // One aligned game per area
-  const gameMap = {
-    staffing:   { name: "Shift Pick-Up",        why: "Fill gaps fast, reduce agency.", tags:["Coverage","Speed"] },
-    retention:  { name: "Living Legends",       why: "Recognize top performers, keep them.", tags:["Recognition","Retention"] },
-    quality:    { name: "Care IQ",              why: "Reinforce daily quality behaviors.", tags:["Quality","Behaviors"] },
-    px:         { name: "Compliment Circle",    why: "Boost kindness patients notice.", tags:["PX","Culture"] },
-    culture:    { name: "Compliment Circle",    why: "Create everyday positive visibility.", tags:["Teamwork","Belonging"] },
-    onboarding: { name: "New Hire Navigator",   why: "Accelerate ramp, reduce early churn.", tags:["Onboarding","Ramp"] },
-  };
-
-  // Short “moment on the floor” stories (one per priority)
-const storyMap = {
-  px: {
-    kicker: "Patient Experience",
-    text:
-`It’s 2:17 p.m.
-A patient’s family is anxious.
+    // Short “moment on the floor” stories (one per priority)
+    const storyMap = {
+      px: { kicker:"PATIENT EXPERIENCE", text:
+`2:17 p.m.
+A family is anxious at the bedside.
 A nurse pauses, explains, and stays present.
 
-That moment doesn’t show up on a dashboard—
-but it changes the room.
+Result:
+An ordinary interaction becomes a moment of trust.
 
-When it’s visible, it becomes the standard.`
-  },
-  quality: {
-    kicker: "Quality & Safety",
-    text:
-`It’s 6:42 a.m.
+That’s visibility.` },
+      quality: { kicker:"QUALITY & SAFETY", text:
+`6:42 a.m.
 A near-miss is caught before it becomes an event.
-A quick check. A small correction. A safer shift.
+A small check prevents a big consequence.
 
-Usually it disappears into the noise.
+Result:
+Safe habits become standard practice.
 
-Visibility turns it into a repeatable habit.`
-  },
-  retention: {
-    kicker: "Retention",
-    text:
-`It’s the end of a hard week.
-Your best nurse quietly keeps the unit steady—
-again.
+That’s visibility.` },
+      retention: { kicker:"RETENTION", text:
+`End of a long week.
+Your strongest nurse holds the unit steady — again.
+No one asked. They just stepped in.
 
-Nobody sees the extra effort.
-Until you make it visible.
+Result:
+Commitment gets recognized before burnout sets in.
 
-Recognition becomes a reason to stay.`
-  },
-  onboarding: {
-    kicker: "Onboarding",
-    text:
+That’s visibility.` },
+      onboarding: { kicker:"ONBOARDING", text:
 `First week on the floor.
-A new hire is unsure, moving fast, trying to fit in.
+A new hire hesitates before a decision.
+A teammate coaches — and someone notices the growth.
 
-One small win gets noticed.
-A teammate calls it out.
+Result:
+Confidence builds faster than doubt.
 
-That visibility turns anxiety into belonging.`
-  },
-  culture: {
-    kicker: "Team Culture",
-    text:
-`It’s a busy shift change.
-A small assist prevents a pile-up.
-A quick “I’ve got you” changes the tone.
+That’s visibility.` },
+      culture: { kicker:"TEAM CULTURE", text:
+`Shift change.
+One nurse jumps in to help without being asked.
+A quiet assist keeps the team moving.
 
-Most teams never capture that moment.
+Result:
+Support becomes the norm, not the exception.
 
-Visibility turns teamwork into culture.`
-  },
-  staffing: {
-    kicker: "Staffing Stability",
-    text:
-`It’s 4:55 p.m.
+That’s visibility.` },
+      staffing: { kicker:"STAFFING STABILITY", text:
+`4:55 p.m.
 A gap opens for night shift.
-Someone picks it up—because it’s seen and valued.
+Someone picks it up — because reliability gets seen and rewarded.
 
+Result:
 Coverage stops being last-minute chaos.
 
-Visibility turns reliability into momentum.`
-  }
-};
-
-  const choicesEl = document.getElementById("choices");
-  const spotEl = document.getElementById("spot");
-  const pickedEl = document.getElementById("picked");
-  const countEl = document.getElementById("count");
-  const msgEl = document.getElementById("msg");
-  const resetBtn = document.getElementById("resetBtn");
-  const continueBtn = document.getElementById("continueBtn");
-
-  // Results overlay
-  const resultsOverlay = document.getElementById("resultsOverlay");
-  const resultsChips = document.getElementById("resultsChips");
-  const recTitleEl = document.getElementById("recTitle");
-  const recTextEl = document.getElementById("recText");
-  const closeResultsBtn = document.getElementById("closeResultsBtn");
-  const backBtn = document.getElementById("backBtn");
-  // Games overlay (used in a few handlers)
-  const gamesOverlay = document.getElementById("gamesOverlay");
-
-
-  // Story overlay  ← ADD RIGHT HERE
-  const storyOverlay = document.getElementById("storyOverlay");
-  const storyKickerEl = document.getElementById("storyKicker");
-  const storyTextEl = document.getElementById("storyText");
-  const closeStoryBtn = document.getElementById("closeStoryBtn");
-  const storyContinueBtn = document.getElementById("storyContinueBtn");
-  const storyBackBtn = document.getElementById("storyBackBtn");
-
-  // Games overlay
-  const gameGrid = document.getElementById("gameGrid");
-  const toLeadBtn = document.getElementById("toLeadBtn");
-
-  // Lead overlay
-  const leadOverlay = document.getElementById("leadOverlay");
-  const closeLeadBtn = document.getElementById("closeLeadBtn");
-  const leadForm = document.getElementById("leadForm");
-  const leadError = document.getElementById("leadError");
-  const leadSuccess = document.getElementById("leadSuccess");
-
-  let picked = []; // array of ids
-
-  function renderChoices(){
-    choicesEl.innerHTML = "";
-    data.forEach(item=>{
-      const el = document.createElement("div");
-      el.className = "card";
-      el.dataset.id = item.id;
-      el.draggable = true;
-      el.innerHTML = `
-        <div>
-          <div class="label">${item.label}</div>
-          <div class="desc">${item.desc}</div>
-        </div>
-      `;
-
-      // Desktop drag
-      el.addEventListener("dragstart", (e)=>{
-        e.dataTransfer.setData("text/plain", item.id);
-        msg("");
-      });
-
-      // Tap to add (works great on iPhone)
-      el.addEventListener("click", ()=>{
-        addPick(item.id);
-      });
-
-      choicesEl.appendChild(el);
-    });
-  }
-
-function renderPicked(){
-
-  // Clear selected state from all cards
-  document.querySelectorAll(".card").forEach(c=>{
-    c.classList.remove("selected");
-  });
-
-  // Apply selected state to picked cards
-  picked.forEach(id=>{
-    const card = document.querySelector(`.card[data-id="${id}"]`);
-    if (card) card.classList.add("selected");
-  });
-
-  pickedEl.innerHTML = "";
-
-  picked.forEach(id=>{
-    const item = data.find(x=>x.id===id);
-    const tag = document.createElement("div");
-    tag.className = "tag";
-    tag.innerHTML = `
-      <span>${item.label}</span>
-      <button class="x" aria-label="Remove ${item.label}">×</button>
-    `;
-    tag.querySelector("button").addEventListener("click", ()=>removePick(id));
-    pickedEl.appendChild(tag);
-  });
-
-  const n = picked.length;
-
-if (n === 0){
-  countEl.textContent = "Choose up to 3 priorities to spotlight.";
-}
-else if (n === 1){
-  countEl.textContent = "Good start.";
-}
-else if (n === 2){
-  countEl.textContent = "Almost there.";
-}
-else if (n === 3){
-  countEl.textContent = "Spotlight locked in.";
-}
-  continueBtn.disabled = picked.length !== MAX;
-
-  // Stronger brightness ramp
-  const t = n / MAX;
-  const ease = t * t;
-
-  spotEl.style.setProperty("--b", (0.12 + 0.55*ease).toFixed(2));
-  spotEl.style.setProperty("--g", (0.10 + 0.70*ease).toFixed(2));
-  spotEl.style.setProperty("--glow", (18 + 160*ease).toFixed(0) + "px");
-
-  if (n === MAX){
-    spotEl.classList.add("lockedIn");
-    setTimeout(()=>spotEl.classList.remove("lockedIn"), 450);
-  }
-}
-
-  function addPick(id){
-    msg("");
-    if (picked.includes(id)) return;
-
-    if (picked.length < MAX){
-      picked.push(id);
-      renderPicked();
-      return;
-    }
-
-    if (behavior === "replaceOldest"){
-      picked.shift();
-      picked.push(id);
-      renderPicked();
-
-      msg("Spotlight is full — replaced your oldest pick.");
-      setTimeout(()=>msg(""), 1200);
-
-      // pulse spotlight
-      spotEl.classList.remove("pulse");
-      void spotEl.offsetWidth;
-      spotEl.classList.add("pulse");
-    } else {
-      msg("Max of 3 — remove one to add another.");
-    }
-  }
-
-  function removePick(id){
-    picked = picked.filter(x=>x!==id);
-    msg("");
-    renderPicked();
-  }
-
-  function reset(){
-    picked = [];
-    msg("");
-    renderPicked();
-  }
-
-  function msg(text){
-    msgEl.textContent = text || "";
-  }
-
-  // Results overlay
-  function showResults(){
-    resultsChips.innerHTML = picked.map(id => {
-      const item = data.find(x=>x.id===id);
-      return `<div class="chip">${item.label}</div>`;
-    }).join("");
-
-    const rec = generateRecommendation(picked);
-    recTitleEl.textContent = rec.title;
-    recTextEl.textContent = rec.text;
-
-    gameGrid.innerHTML = picked.map(id=>{
-    const gm = gameMap[id] || { name:"Gratia Game", why:"Aligned to your selected priority.", tags:[] };
-    const tags = (gm.tags || []).slice(0,3)
-      .map(t=>`<span class="miniTag">${t}</span>`)
-      .join("");
-    return `
-      <div class="gameCard">
-        <div class="gameName">${gm.name}</div>
-        <div class="gameWhy">${gm.why}</div>
-        <div class="miniTagRow">${tags}</div>
-      </div>
-    `;
-  }).join("");
-
-    burstConfetti();
-    setTimeout(() => {
-   resultsOverlay.classList.remove("hidden");
-   }, 200);
-  }
-
-  function closeResults(){ resultsOverlay.classList.add("hidden"); }
-
-  function showStory(){
-  const key = picked[picked.length - 1] || picked[0];
-  const s = storyMap[key] || {
-    kicker: "Activate visibility",
-    text:
-`Everyday moments matter.
-When they’re visible, they get reinforced.
-And the culture shifts—fast.`
-  };
-
-  storyKickerEl.textContent = s.kicker;
-  storyTextEl.textContent = s.text;
-
-  storyOverlay.classList.remove("hidden");
-}
-
-function closeStory(){
-  storyOverlay.classList.add("hidden");
-}
-
-  function generateRecommendation(ids){
-    const has = (x)=>ids.includes(x);
-
-    if (has("staffing") && has("retention")){
-      return {
-        title: "Recommended focus: staffing + retention",
-        text: "Pair staffing support with recognition loops so units stabilize quickly and top performers stay visible."
-      };
-    }
-    if (has("quality") && (has("px") || has("culture"))){
-      return {
-        title: "Recommended focus: quality + experience",
-        text: "Tie daily behaviors to visible recognition so leaders reinforce what ‘great’ looks like in real time."
-      };
-    }
-    if (has("onboarding") && has("culture")){
-      return {
-        title: "Recommended focus: faster ramp + belonging",
-        text: "Use onboarding moments to build connection early, then keep momentum with lightweight, shift-friendly recognition."
-      };
-    }
-    if (has("quality")){
-      return {
-        title: "Recommended focus: measurable behaviors",
-        text: "Anchor on a clear set of behaviors and make them visible daily so leaders can reinforce and replicate what works."
-      };
-    }
-    return {
-      title: "Recommended focus: activate visibility",
-      text: "Your priorities benefit from making everyday moments visible and reinforcing the right behaviors consistently."
+That’s visibility.` },
     };
-  }
 
-  function closeGames(){ gamesOverlay.classList.add("hidden"); }
+    // ---------- Element refs ----------
+    const introScreen   = document.getElementById("introScreen");
+    const startBtn      = document.getElementById("startBtn");
+    const gameContainer = document.getElementById("gameContainer");
 
-  // Lead overlay
-  function showLead(){
-    gamesOverlay.classList.add("hidden");
-    leadOverlay.classList.remove("hidden");
-    leadError.textContent = "";
-    leadSuccess.textContent = "";
-  }
+    const bubbleStage   = document.getElementById("bubbleStage");
+    const msgEl         = document.getElementById("msg");
+    const resetBtn      = document.getElementById("resetBtn");
+    const continueBtn   = document.getElementById("continueBtn");
+    const progressFill  = document.getElementById("progressFill");
+    const progressText  = document.getElementById("progressText");
 
-  function closeLead(){ leadOverlay.classList.add("hidden"); }
+    const storyOverlay    = document.getElementById("storyOverlay");
+    const storyKickerEl   = document.getElementById("storyKicker");
+    const storyTextEl     = document.getElementById("storyText");
+    const closeStoryBtn   = document.getElementById("closeStoryBtn");
+    const storyContinueBtn= document.getElementById("storyContinueBtn");
+    const storyBackBtn    = document.getElementById("storyBackBtn");
 
-  function validateLeadForm(fd){
-    const required = ["firstName","lastName","organization","email","phone"];
-    for (const k of required){
-      if (!String(fd.get(k) || "").trim()) return `Please enter your ${k.replace(/([A-Z])/g," $1").toLowerCase()}.`;
-    }
-    const email = String(fd.get("email") || "").trim();
-    if (!/^\S+@\S+\.\S+$/.test(email)) return "Please enter a valid email address.";
-    return null;
-  }
+    const resultsOverlay = document.getElementById("resultsOverlay");
+    const resultsChips   = document.getElementById("resultsChips");
+    const recTitleEl     = document.getElementById("recTitle");
+    const recTextEl      = document.getElementById("recText");
+    const gameGrid       = document.getElementById("gameGrid");
+    const closeResultsBtn= document.getElementById("closeResultsBtn");
+    const backBtn        = document.getElementById("backBtn");
+    const toLeadBtn      = document.getElementById("toLeadBtn");
 
-  // Drop zone (desktop drag)
-  spotEl.addEventListener("dragover", (e)=>{ e.preventDefault(); spotEl.classList.add("dragover"); });
-  spotEl.addEventListener("dragleave", ()=> spotEl.classList.remove("dragover"));
-  spotEl.addEventListener("drop", (e)=>{
-    e.preventDefault();
-    spotEl.classList.remove("dragover");
-    const id = e.dataTransfer.getData("text/plain");
-    if (id) addPick(id);
-  });
+    const leadOverlay    = document.getElementById("leadOverlay");
+    const closeLeadBtn   = document.getElementById("closeLeadBtn");
+    const leadForm       = document.getElementById("leadForm");
+    const leadError      = document.getElementById("leadError");
+    const leadSuccess    = document.getElementById("leadSuccess");
+    const leadFormState  = document.getElementById("leadFormState");
+    const thankYouState  = document.getElementById("thankYouState");
+    const shareQr        = document.getElementById("shareQr");
+    const copyLinkBtn    = document.getElementById("copyLinkBtn");
+    const startOverBtn   = document.getElementById("startOverBtn");
 
-  // Buttons
-  resetBtn.addEventListener("click", reset);
-  
-  // Continue now opens Story first
-continueBtn.addEventListener("click", showStory);
+    const scoreOverlay   = document.getElementById("scoreOverlay");
+    const scoreMeta      = document.getElementById("scoreMeta");
+    const scoreList      = document.getElementById("scoreList");
+    const closeScoreBtn  = document.getElementById("closeScoreBtn");
+    const refreshScoreBtn= document.getElementById("refreshScoreBtn");
+    const openScoreBtn   = document.getElementById("openScoreBtn");
 
-// Story buttons
-closeStoryBtn.addEventListener("click", closeStory);
-storyContinueBtn.addEventListener("click", ()=>{ 
-  closeStory(); 
-  showResults(); 
-});
-storyBackBtn.addEventListener("click", ()=>{ 
-  closeStory(); 
-});
+    // ---------- State ----------
+    let picked = []; // ids
+    let bubbles = [];
+    let bubbleRAF = null;
+    let bubbleRunning = false;
 
-  closeResultsBtn.addEventListener("click", closeResults);
-  backBtn.addEventListener("click", closeResults);
+    // ---------- Helpers ----------
+    function msg(text){ if (msgEl) msgEl.textContent = text || ""; }
 
-  toLeadBtn.addEventListener("click", showLead);
+    function renderPicked(){
+      const n = picked.length;
+      const pct = Math.round((n / MAX) * 100);
 
-  closeLeadBtn.addEventListener("click", closeLead);
+      if (progressFill) progressFill.style.width = pct + "%";
+      if (progressText) progressText.textContent = `${n} / ${MAX} selected`;
 
-  // Click outside modals closes current overlay
-  [resultsOverlay, gamesOverlay, leadOverlay].forEach(ov=>{
-    ov.addEventListener("click", (e)=>{
-      if (e.target === ov){
-        ov.classList.add("hidden");
+      // update aria
+      const bar = progressFill?.parentElement;
+      if (bar && bar.getAttribute("role") === "progressbar") {
+        bar.setAttribute("aria-valuenow", String(n));
       }
-    });
-  });
 
-  // ESC closes topmost overlay
-  window.addEventListener("keydown", (e)=>{
-    if (e.key !== "Escape") return;
-    if (!leadOverlay.classList.contains("hidden")) return closeLead();
-    if (!gamesOverlay.classList.contains("hidden")) return closeGames();
-    if (!resultsOverlay.classList.contains("hidden")) return closeResults();
-  });
+      if (continueBtn) continueBtn.disabled = (n !== MAX);
 
-  // Lead submit (currently console.log)
-  leadForm.addEventListener("submit", (e)=>{
-    e.preventDefault();
-    leadError.textContent = "";
-    leadSuccess.textContent = "";
-
-    const fd = new FormData(leadForm);
-    const err = validateLeadForm(fd);
-    if (err){
-      leadError.textContent = err;
-      return;
+      if (n === 0) msg("Tap 3 priorities to unlock your Spotlight.");
+      else if (n < MAX) msg(`Tap ${MAX - n} more to continue.`);
+      else msg("Unlocked. Hit Continue!");
     }
 
-    const payload = {
-      picks: picked.slice(),
-      picks_labels: picked.map(id => (data.find(x=>x.id===id) || {}).label).filter(Boolean),
-      aligned_games: picked.map(id => (gameMap[id] || {}).name).filter(Boolean),
-      firstName: fd.get("firstName"),
-      lastName: fd.get("lastName"),
-      organization: fd.get("organization"),
-      email: fd.get("email"),
-      phone: fd.get("phone"),
-      role: fd.get("role"),
-      createdAt: new Date().toISOString(),
-    };
+    function addPick(id){
+      if (picked.includes(id)) return;
 
-      console.log("Lead payload (send this to HubSpot next):", payload);
+      if (picked.length >= MAX){
+        msg("Max of 3 — keep popping to continue.");
+        setTimeout(()=>msg("Unlocked. Hit Continue!"), 700);
+        return;
+      }
 
-      // Get elements
-      const leadFormState = document.getElementById("leadFormState");
-      const thankYouState = document.getElementById("thankYouState");
-      const shareQr = document.getElementById("shareQr");
+      picked.push(id);
+      renderPicked();
+    }
 
-      // Build share URL
-      const shareUrl = window.location.href.split("#")[0];
+    // ---------- Bubble visuals ----------
+    const bubbleVariants = ["v-magenta","v-blue","v-orange"];
+    function randVariant(){
+      return bubbleVariants[Math.floor(Math.random() * bubbleVariants.length)];
+    }
+    function applyVariant(el){
+      bubbleVariants.forEach(v => el.classList.remove(v));
+      el.classList.add(randVariant());
+    }
 
-      // Generate QR
-      shareQr.src =
-      "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" +
-      encodeURIComponent(shareUrl);
+    function resetBubbles(){
+      bubbles = [];
+      if (bubbleStage) bubbleStage.innerHTML = "";
+    }
 
-      // Swap UI
-      leadFormState.classList.add("hidden");
-      thankYouState.classList.remove("hidden");
+    function createBubbles(){
+      if (!bubbleStage) return;
 
-      // Clear any error/success text
+      resetBubbles();
+
+      const stageRect = bubbleStage.getBoundingClientRect();
+      const stageW = stageRect.width;
+
+      data.forEach((item) => {
+        const el = document.createElement("div");
+        el.className = "bubble";
+        applyVariant(el);
+        el.dataset.id = item.id;
+        el.innerHTML = `
+          <div>
+            <div class="bTitle">${item.label}</div>
+            <div class="bSub">Tap to pop</div>
+          </div>
+        `;
+
+        // size tied to stage width (keeps it usable on iPhone)
+        const size = Math.min(160, Math.max(115, stageW * 0.28));
+        const pad = 14;
+
+        // Find a non-overlapping start pos (rejection sampling)
+        let x = 0, y = 0, tries = 0;
+        const overlaps = (nx, ny) => {
+          for (const other of bubbles){
+            if (other.popped) continue;
+            const dx = (nx + size/2) - (other.x + other.size/2);
+            const dy = (ny + size/2) - (other.y + other.size/2);
+            const dist = Math.hypot(dx, dy);
+            const minDist = (size/2 + other.size/2 + pad);
+            if (dist < minDist) return true;
+          }
+          return false;
+        };
+
+        do {
+          x = Math.random() * Math.max(1, (stageW - size));
+          y = - (60 + Math.random() * 260); // -60 to about -320
+          tries++;
+        } while (overlaps(x, y) && tries < 60);
+
+        const speed = 0.35 + Math.random() * 0.35; // slow-ish
+
+        const b = { id: item.id, el, x, y, size, speed, popped:false };
+
+        const pop = () => handleBubblePop(b);
+        el.addEventListener("click", pop);
+        el.addEventListener("touchend", (e)=>{ e.preventDefault(); pop(); }, { passive:false });
+
+        bubbleStage.appendChild(el);
+        bubbles.push(b);
+      });
+
+      startBubbleLoop();
+    }
+
+    function startBubbleLoop(){
+      if (bubbleRunning) return;
+      bubbleRunning = true;
+
+      const tick = () => {
+        if (!bubbleRunning) return;
+
+        const rect = bubbleStage.getBoundingClientRect();
+        const stageW = rect.width;
+        const stageH = rect.height;
+
+        for (const b of bubbles){
+          if (b.popped) continue;
+
+          b.y += b.speed * 1.35;
+
+          // recycle at bottom
+          if (b.y > stageH + 40){
+            b.y = - (Math.random() * 260 + 120);
+
+            // pick a fresh x (avoid stacking)
+            let nx = 0;
+            let t = 0;
+            do {
+              nx = Math.random() * Math.max(1, (stageW - b.size));
+              t++;
+            } while (
+              t < 25 &&
+              bubbles.some(o =>
+                o !== b && !o.popped &&
+                Math.abs((nx + b.size/2) - (o.x + o.size/2)) < (b.size * 0.75)
+              )
+            );
+
+            b.x = nx;
+            applyVariant(b.el);
+          }
+
+          b.el.style.transform = `translate3d(${b.x}px, ${b.y}px, 0)`;
+        }
+
+        bubbleRAF = requestAnimationFrame(tick);
+      };
+
+      bubbleRAF = requestAnimationFrame(tick);
+    }
+
+    function stopBubbleLoop(){
+      bubbleRunning = false;
+      if (bubbleRAF) cancelAnimationFrame(bubbleRAF);
+      bubbleRAF = null;
+    }
+
+    function handleBubblePop(b){
+      if (b.popped) return;
+      if (picked.includes(b.id)) return;
+
+      if (picked.length >= MAX){
+        b.el.classList.remove("blocked");
+        void b.el.offsetWidth;
+        b.el.classList.add("blocked");
+        msg("Max of 3 — hit Continue.");
+        setTimeout(()=>msg("Unlocked. Hit Continue!"), 700);
+        return;
+      }
+
+      addPick(b.id);
+
+      b.popped = true;
+      b.el.classList.add("popping");
+      setTimeout(()=>{
+        if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
+      }, 240);
+    }
+
+    function resetGame(){
+      picked = [];
+      renderPicked();
+      msg("");
+      stopBubbleLoop();
+      createBubbles();
+    }
+
+    // ---------- Story / Results / Lead ----------
+    function showStory(){
+      stopBubbleLoop();
+      const key = picked[picked.length - 1] || picked[0];
+      const s = storyMap[key] || {
+        kicker:"Activate visibility",
+        text:`Everyday moments matter.\nWhen they’re visible, they get reinforced.\nAnd the culture shifts—fast.`
+      };
+      storyKickerEl.textContent = s.kicker;
+      storyTextEl.textContent = s.text;
+      storyOverlay.classList.remove("hidden");
+    }
+
+    function closeStory(){ storyOverlay.classList.add("hidden"); }
+
+    function generateRecommendation(ids){
+      const has = (x)=>ids.includes(x);
+
+      if (has("staffing") && has("retention")){
+        return {
+          title: "Recommended focus: staffing + retention",
+          text: "Pair staffing support with recognition loops so units stabilize quickly and top performers stay visible."
+        };
+      }
+      if (has("quality") && (has("px") || has("culture"))){
+        return {
+          title: "Recommended focus: quality + experience",
+          text: "Tie daily behaviors to visible recognition so leaders reinforce what ‘great’ looks like in real time."
+        };
+      }
+      if (has("onboarding") && has("culture")){
+        return {
+          title: "Recommended focus: faster ramp + belonging",
+          text: "Use onboarding moments to build connection early, then keep momentum with lightweight, shift-friendly recognition."
+        };
+      }
+      if (has("quality")){
+        return {
+          title: "Recommended focus: measurable behaviors",
+          text: "Anchor on a clear set of behaviors and make them visible daily so leaders can reinforce and replicate what works."
+        };
+      }
+      return {
+        title: "Recommended focus: activate visibility",
+        text: "Your priorities benefit from making everyday moments visible and reinforcing the right behaviors consistently."
+      };
+    }
+
+    function showResults(){
+      resultsChips.innerHTML = picked.map(id => {
+        const item = data.find(x=>x.id===id);
+        return `<div class="chip">${item ? item.label : id}</div>`;
+      }).join("");
+
+      const rec = generateRecommendation(picked);
+      recTitleEl.textContent = rec.title;
+      recTextEl.textContent = rec.text;
+
+      gameGrid.innerHTML = picked.map(id=>{
+        const gm = gameMap[id] || { name:"Gratia Game", why:"Aligned to your selected priority.", tags:[] };
+        const tags = (gm.tags || []).slice(0,3).map(t=>`<span class="miniTag">${t}</span>`).join("");
+        return `
+          <div class="gameCard">
+            <div class="gameName">${gm.name}</div>
+            <div class="gameWhy">${gm.why}</div>
+            <div class="miniTagRow">${tags}</div>
+          </div>
+        `;
+      }).join("");
+
+      resultsOverlay.classList.remove("hidden");
+    }
+
+    function closeResults(){ resultsOverlay.classList.add("hidden"); }
+
+    function showLead(){
+      resultsOverlay.classList.add("hidden");
+      leadOverlay.classList.remove("hidden");
       leadError.textContent = "";
       leadSuccess.textContent = "";
-  });
-
-  function burstConfetti(){
-  const canvas = document.getElementById("confettiCanvas");
-  const ctx = canvas.getContext("2d");
-
-  // Resize to screen
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
-  canvas.width = Math.floor(window.innerWidth * dpr);
-  canvas.height = Math.floor(window.innerHeight * dpr);
-  canvas.style.width = window.innerWidth + "px";
-  canvas.style.height = window.innerHeight + "px";
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-
-  const colors = ["#E6007E","#3C8DCC","#F5A623","#FFFFFF"]; // Gratia accents
-  const pieces = [];
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight * 0.45;
-
-  const count = 260;               // keep modest for iPhone
-  const gravity = 0.12;
-  const drag = 0.992;
-
-  for (let i=0;i<count;i++){
-    const angle = Math.random() * Math.PI * 2; // full 360°
-    const speed = 6 + Math.random()*10;
-    pieces.push({
-      x: centerX,
-      y: centerY,
-      vx: Math.cos(angle)*speed + (Math.random()*2-1),
-      vy: Math.sin(angle)*speed - (Math.random()*3),
-      r: 3 + Math.random()*4,
-      w: 6 + Math.random()*8,
-      h: 3 + Math.random()*6,
-      rot: Math.random()*Math.PI,
-      vr: (Math.random()*0.2 - 0.1),
-      color: colors[Math.floor(Math.random()*colors.length)],
-      life: 0,
-      maxLife: 70 + Math.floor(Math.random()*30)
-    });
-  }
-
-  let frame = 0;
-  function tick(){
-    frame++;
-    ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-
-    for (const p of pieces){
-      p.vx *= drag;
-      p.vy = p.vy*drag + gravity;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.rot += p.vr;
-      p.life++;
-
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-      ctx.restore();
     }
 
-    // stop when most are done
-    const alive = pieces.some(p => p.life < p.maxLife && p.y < window.innerHeight + 40);
-    if (alive && frame < 120){
-      requestAnimationFrame(tick);
-    } else {
-      ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-    }
-  }
+    function closeLead(){ leadOverlay.classList.add("hidden"); }
 
-  requestAnimationFrame(tick);
-}
- // ===== Share + Reset Buttons =====
-const shareUrl = window.location.href.split("#")[0];
-
-// Copy link button (iPhone/Safari safe)
-if (copyLinkBtn){
-  copyLinkBtn.addEventListener("click", ()=>{
-    const urlToShare = window.location.href.split("#")[0];
-
-    const showCopied = ()=>{
-      const prev = copyLinkBtn.textContent;
-      copyLinkBtn.textContent = "Copied!";
-      setTimeout(()=>copyLinkBtn.textContent = prev || "Copy link", 1200);
-    };
-
-    // Best case: Clipboard API (works on GitHub Pages HTTPS)
-    if (navigator.clipboard && window.isSecureContext){
-      navigator.clipboard.writeText(urlToShare)
-        .then(showCopied)
-        .catch(()=>fallbackCopy(urlToShare));
-      return;
+    function validateLeadForm(fd){
+      const required = ["firstName","lastName","organization","email","phone"];
+      for (const k of required){
+        if (!String(fd.get(k) || "").trim()) {
+          return `Please enter your ${k.replace(/([A-Z])/g," $1").toLowerCase()}.`;
+        }
+      }
+      const email = String(fd.get("email") || "").trim();
+      if (!/^\S+@\S+\.\S+$/.test(email)) return "Please enter a valid email address.";
+      return null;
     }
 
-    // Fallbacks
-    fallbackCopy(urlToShare);
+    // ---------- Scoreboard ----------
+    async function loadScoreboard(){
+      scoreMeta.textContent = "Loading…";
+      scoreList.innerHTML = "";
 
-    function fallbackCopy(text){
-      // Try execCommand fallback
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      ta.setAttribute("readonly", "");
-      ta.style.position = "fixed";
-      ta.style.top = "-1000px";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      ta.setSelectionRange(0, ta.value.length);
+      try{
+        const url = CONFERENCE_ENDPOINT + "?action=stats&t=" + Date.now();
+        const res = await fetch(url, { method:"GET", cache:"no-store" });
+        const raw = await res.text();
 
-      let ok = false;
-      try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
-      document.body.removeChild(ta);
+        if (!res.ok) throw new Error("HTTP " + res.status);
 
-      if (ok){
-        showCopied();
-      } else {
-        // Last resort: manual copy prompt
-        prompt("Copy this link:", text);
+        let json;
+        try{ json = JSON.parse(raw); }
+        catch(_){ throw new Error("Not JSON (likely login/HTML). Check Apps Script access."); }
+
+        const summary = Array.isArray(json.summary) ? json.summary : [];
+        const total = summary.reduce((sum, row)=> sum + Number(row.count || 0), 0);
+
+        scoreMeta.textContent = total ? `${total} responses today` : "No responses yet";
+
+        scoreList.innerHTML = summary.map(row=>{
+          const c = Number(row.count || 0);
+          const pct = total ? Math.round((c/total)*100) : 0;
+          return `
+            <div class="scoreRow">
+              <div class="scoreTop">
+                <span>${row.label || row.id}</span>
+                <span>${pct}%</span>
+              </div>
+              <div class="scoreBarWrap">
+                <div class="scoreBar" style="width:${pct}%;"></div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+      }catch(err){
+        console.error("Scoreboard load failed:", err);
+        scoreMeta.textContent = "Couldn’t load results.";
+        scoreList.innerHTML = `
+          <div class="box">
+            <div class="boxtitle">Troubleshooting</div>
+            <p class="boxtext">
+              ${String(err.message || err)}
+              <br><br>
+              Most common fix: Apps Script Web App must be deployed to <b>Anyone</b> access.
+            </p>
+          </div>
+        `;
       }
     }
-  });
-}
 
-if (startOverBtn){
-  startOverBtn.addEventListener("click", ()=>{
-    picked = [];
+    // ---------- Confetti ----------
+    function burstConfetti(){
+      const canvas = document.getElementById("confettiCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      canvas.style.display = "block";
+      canvas.style.position = "fixed";
+      canvas.style.inset = "0";
+      canvas.style.pointerEvents = "none";
+      canvas.style.zIndex = "99999";
+
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+
+      const colors = ["#E6007E","#3C8DCC","#F5A623","#FFFFFF"];
+      const pieces = [];
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight * 0.45;
+
+      const count = 240;
+      const gravity = 0.12;
+      const drag = 0.992;
+
+      for (let i=0;i<count;i++){
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 6 + Math.random()*10;
+        pieces.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle)*speed + (Math.random()*2-1),
+          vy: Math.sin(angle)*speed - (Math.random()*3),
+          w: 6 + Math.random()*8,
+          h: 3 + Math.random()*6,
+          rot: Math.random()*Math.PI,
+          vr: (Math.random()*0.2 - 0.1),
+          color: colors[Math.floor(Math.random()*colors.length)],
+          life: 0,
+          maxLife: 70 + Math.floor(Math.random()*30)
+        });
+      }
+
+      let frame = 0;
+      function tick(){
+        frame++;
+        ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+
+        for (const p of pieces){
+          p.vx *= drag;
+          p.vy = p.vy*drag + gravity;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vr;
+          p.life++;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+          ctx.restore();
+        }
+
+        const alive = pieces.some(p => p.life < p.maxLife && p.y < window.innerHeight + 40);
+        if (alive && frame < 120) requestAnimationFrame(tick);
+        else ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // ---------- Start Game (iPhone-safe) ----------
+    function startGame(e){
+      if (e) { try{ e.preventDefault(); }catch(_){} }
+
+      introScreen.classList.add("hidden");
+      gameContainer.classList.remove("hidden");
+      window.scrollTo(0,0);
+
+      // wait a frame so bubbleStage has layout (important on iOS)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          renderPicked();
+          createBubbles();
+        });
+      });
+    }
+
+    // ---------- Wire up events ----------
+    // Start
+    startBtn.addEventListener("click", startGame);
+    startBtn.addEventListener("touchend", (e)=>{ e.preventDefault(); startGame(e); }, { passive:false });
+
+    // Reset
+    resetBtn.addEventListener("click", resetGame);
+
+    // Continue -> Story
+    continueBtn.addEventListener("click", showStory);
+
+    // Story controls
+    closeStoryBtn.addEventListener("click", closeStory);
+    storyBackBtn.addEventListener("click", closeStory);
+    storyContinueBtn.addEventListener("click", () => {
+      closeStory();
+      showResults();
+      requestAnimationFrame(() => requestAnimationFrame(burstConfetti));
+    });
+
+    // Results controls
+    closeResultsBtn.addEventListener("click", () => { closeResults(); startBubbleLoop(); });
+    backBtn.addEventListener("click", () => { closeResults(); startBubbleLoop(); });
+    toLeadBtn.addEventListener("click", showLead);
+
+    // Lead controls
+    closeLeadBtn.addEventListener("click", closeLead);
+
+    // Scoreboard controls
+    if (openScoreBtn){
+      openScoreBtn.addEventListener("click", ()=>{
+        scoreOverlay.classList.remove("hidden");
+        setTimeout(loadScoreboard, 50);
+      });
+    }
+    closeScoreBtn.addEventListener("click", ()=> scoreOverlay.classList.add("hidden"));
+    refreshScoreBtn.addEventListener("click", loadScoreboard);
+
+    // Click-outside closes overlays
+    [storyOverlay, resultsOverlay, leadOverlay, scoreOverlay].forEach(ov=>{
+      ov.addEventListener("click", (e)=>{
+        if (e.target === ov) ov.classList.add("hidden");
+      });
+    });
+
+    // ESC closes topmost overlay
+    window.addEventListener("keydown", (e)=>{
+      if (e.key !== "Escape") return;
+      if (!scoreOverlay.classList.contains("hidden")) return scoreOverlay.classList.add("hidden");
+      if (!leadOverlay.classList.contains("hidden")) return closeLead();
+      if (!resultsOverlay.classList.contains("hidden")) return closeResults();
+      if (!storyOverlay.classList.contains("hidden")) return closeStory();
+    });
+
+    // Lead submit
+    leadForm.addEventListener("submit", (e)=>{
+      e.preventDefault();
+      leadError.textContent = "";
+      leadSuccess.textContent = "";
+
+      const fd = new FormData(leadForm);
+      const err = validateLeadForm(fd);
+      if (err){ leadError.textContent = err; return; }
+
+      const payload = {
+        picks: picked.slice(),
+        picks_labels: picked.map(id => (data.find(x=>x.id===id) || {}).label).filter(Boolean),
+        aligned_games: picked.map(id => (gameMap[id] || {}).name).filter(Boolean),
+        firstName: fd.get("firstName"),
+        lastName: fd.get("lastName"),
+        organization: fd.get("organization"),
+        email: fd.get("email"),
+        phone: fd.get("phone"),
+        role: fd.get("role"),
+        createdAt: new Date().toISOString(),
+      };
+
+      // Conference Mode POST to Google Apps Script
+      payload.sessionId = payload.sessionId || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + "-" + Math.random().toString(16).slice(2));
+      payload.device = navigator.userAgent;
+
+      fetch(CONFERENCE_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+      })
+      .then(r => r.json())
+      .then(res => console.log("Conference POST:", res))
+      .catch(err => console.warn("Conference POST failed:", err));
+
+      // QR share
+      const shareUrl = window.location.href.split("#")[0];
+      if (shareQr){
+        shareQr.src = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(shareUrl);
+      }
+
+      leadFormState.classList.add("hidden");
+      thankYouState.classList.remove("hidden");
+    });
+
+    // Copy link button (iPhone/Safari safe)
+    if (copyLinkBtn){
+      copyLinkBtn.addEventListener("click", ()=>{
+        const urlToShare = window.location.href.split("#")[0];
+
+        const showCopied = ()=>{
+          const prev = copyLinkBtn.textContent;
+          copyLinkBtn.textContent = "Copied!";
+          setTimeout(()=>copyLinkBtn.textContent = prev || "Copy link", 1200);
+        };
+
+        if (navigator.clipboard && window.isSecureContext){
+          navigator.clipboard.writeText(urlToShare)
+            .then(showCopied)
+            .catch(()=>fallbackCopy(urlToShare));
+          return;
+        }
+
+        fallbackCopy(urlToShare);
+
+        function fallbackCopy(text){
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.top = "-1000px";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          ta.setSelectionRange(0, ta.value.length);
+
+          let ok = false;
+          try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+          document.body.removeChild(ta);
+
+          if (ok) showCopied();
+          else prompt("Copy this link:", text);
+        }
+      });
+    }
+
+    // Start over
+    if (startOverBtn){
+      startOverBtn.addEventListener("click", ()=>{
+        picked = [];
+        renderPicked();
+
+        // close overlays
+        leadOverlay.classList.add("hidden");
+        resultsOverlay.classList.add("hidden");
+        storyOverlay.classList.add("hidden");
+        scoreOverlay.classList.add("hidden");
+
+        // reset lead UI
+        thankYouState.classList.add("hidden");
+        leadFormState.classList.remove("hidden");
+        leadForm.reset();
+        leadError.textContent = "";
+        leadSuccess.textContent = "";
+
+        // return to intro
+        introScreen.classList.remove("hidden");
+        gameContainer.classList.add("hidden");
+
+        stopBubbleLoop();
+        resetBubbles();
+      });
+    }
+
+    // init
     renderPicked();
-    leadOverlay.classList.add("hidden");
-    resultsOverlay.classList.add("hidden");
-    thankYouState.classList.add("hidden");
-    leadFormState.classList.remove("hidden");
-    introScreen.classList.remove("hidden");
-    gameContainer.classList.add("hidden");
-  });
-}
-  // ===== Start Over Fix =====
-document.addEventListener("click", function(e){
-  if (e.target && e.target.id === "startOverBtn"){
-    
-    // Reset selections
-    picked = [];
-    renderPicked();
-
-    // Hide overlays
-    leadOverlay.classList.add("hidden");
-    resultsOverlay.classList.add("hidden");
-
-    // Reset lead state
-    thankYouState.classList.add("hidden");
-    leadFormState.classList.remove("hidden");
-    leadForm.reset();
-
-    // Return to intro
-    introScreen.classList.remove("hidden");
-    gameContainer.classList.add("hidden");
-
-    window.scrollTo(0,0);
-  }
-});
-  // init
-  renderChoices();
-  renderPicked();
-</script>
-  <canvas id="confettiCanvas"></canvas>
+  </script>
 </body>
 </html>
