@@ -1463,15 +1463,20 @@ function explodeAt(x, y, variantClass){
       if (picked.includes(b.id)) return;
 
       if (picked.length >= MAX){
-        b.el.classList.remove("blocked");
-        void b.el.offsetWidth;
-        b.el.classList.add("blocked");
-        msg("Max of 3 — hit Continue.");
-        setTimeout(()=>msg("Unlocked. Hit Continue!"), 700);
-        return;
-      }
+  // remove oldest selection
+  picked.shift();
 
-      addPick(b.id);
+  // add the new one
+  picked.push(b.id);
+
+  renderPicked();
+
+  msg("Replaced your oldest priority.");
+  setTimeout(()=>msg("Unlocked. Hit Continue!"), 800);
+
+} else {
+  addPick(b.id);
+}
 
 // ✅ unlock + pop sound (iPhone requires user gesture once)
 unlockAudio();
